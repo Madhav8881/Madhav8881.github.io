@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Madhav AI Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a computer-vision "frame" motif. Detection boxes and confidence tags frame the hero and each project; the page stays quiet around them. */
+:root {
+  --paper: #eef1f5;
+  --card: #ffffff;
+  --ink: #0e1b2c;
+  --muted: #53627a;
+  --line: #cfd7e3;
+  --accent: #2b4eff;
+  --mark: #e0791a;
+  --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0b1220;
+    --card: #121b2d;
+    --ink: #e8edf6;
+    --muted: #9aa8bf;
+    --line: #26334b;
+    --accent: #7d95ff;
+    --mark: #f2a04d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0b1220;
+  --card: #121b2d;
+  --ink: #e8edf6;
+  --muted: #9aa8bf;
+  --line: #26334b;
+  --accent: #7d95ff;
+  --mark: #f2a04d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -0.02em; line-height: 1.05; }
+p { margin: 0; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+.mono { font-family: var(--mono); }
+
+/* nav */
+nav { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; flex-wrap: wrap; }
+nav .brand { font-family: var(--display); font-weight: 800; font-size: 18px; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+nav ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+nav ul a { font-family: var(--mono); font-size: 13px; color: var(--muted); text-decoration: none; }
+nav ul a:hover { color: var(--accent); }
+
+/* hero */
+.hero { padding: 72px 0 56px; }
+.hero .wrap { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; }
+.eyebrow { font-family: var(--mono); font-size: 13px; color: var(--muted); display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+.eyebrow .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+.hero h1 { font-size: clamp(44px, 7vw, 88px); font-weight: 800; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lede { margin-top: 24px; font-size: 19px; color: var(--muted); max-width: 52ch; }
+.hero .cta { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1.5px solid var(--ink); color: var(--ink); background: transparent; }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* detection frame */
+.frame { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.frame svg { display: block; width: 100%; height: auto; }
+.frame .cap { font-family: var(--mono); font-size: 12px; color: var(--muted); padding: 10px 4px 0; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+
+/* sections */
+section { padding: 64px 0; border-top: 1px solid var(--line); }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+.sec-head h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 700; }
+.sec-head .tag { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--card); overflow: hidden; }
+.stat { padding: 22px 24px; border-right: 1px solid var(--line); }
+.stat:last-child { border-right: 0; }
+.stat b { display: block; font-family: var(--display); font-size: 38px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat span { display: block; margin-top: 8px; font-size: 14px; color: var(--muted); }
+
+.focus { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.focus article { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.focus .idx { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+.focus h3 { font-size: 24px; font-weight: 700; }
+.focus p { color: var(--muted); font-size: 15.5px; }
+.focus .chips { margin-top: auto; padding-top: 6px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--mono); font-size: 12.5px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); background: var(--paper); }
+
+/* projects */
+.project { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 32px; margin-bottom: 28px; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 40px; }
+.project .no { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+.project h3 { font-size: clamp(30px, 3.6vw, 42px); font-weight: 800; margin: 8px 0 14px; }
+.project .what { color: var(--muted); max-width: 46ch; }
+.project .chips { margin-top: 20px; }
+.project .links { margin-top: 22px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 15px; font-weight: 600; }
+.project ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.project li { padding-left: 22px; position: relative; font-size: 16px; }
+.project li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 10px; height: 10px; border: 2px solid var(--mark); border-radius: 2px; }
+.project li strong { font-weight: 600; }
+.pipe { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.pipe span.node { border: 1px dashed var(--muted); padding: 3px 8px; border-radius: 4px; color: var(--ink); }
+.pipe i { font-style: normal; color: var(--mark); }
+
+.more { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.more .lbl { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-right: 6px; }
+
+/* skills */
+.skills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--card); }
+.skill-row { padding: 22px 24px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); }
+.skill-row:nth-child(2n) { border-right: 0; }
+.skill-row:nth-last-child(-n+2) { border-bottom: 0; }
+.skill-row h3 { font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--muted); margin-bottom: 12px; text-transform: none; }
+
+.edu { display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 28px; flex-wrap: wrap; }
+.edu h3 { font-size: 28px; font-weight: 700; }
+.edu p { color: var(--muted); margin-top: 6px; }
+.edu .cgpa { text-align: right; }
+.edu .cgpa b { font-family: var(--display); font-size: 56px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.edu .cgpa span { display: block; font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.contact { text-align: left; }
+.contact h2 { font-size: clamp(36px, 6vw, 68px); font-weight: 800; max-width: 16ch; }
+.contact p { margin-top: 18px; color: var(--muted); max-width: 52ch; }
+.contact .cta { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+footer { padding: 28px 0 48px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+@media (max-width: 860px) {
+  .hero .wrap, .project { grid-template-columns: 1fr; }
+  .hero { padding-top: 44px; }
+  .focus { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stat:nth-child(2) { border-right: 0; }
+  .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .skills { grid-template-columns: 1fr; }
+  .skill-row { border-right: 0 !important; border-bottom: 1px solid var(--line) !important; }
+  .skill-row:last-child { border-bottom: 0 !important; }
+  .project { padding: 24px; gap: 28px; }
+  .edu .cgpa { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top">Madhav</a>
+    <ul>
+      <li><a href="#focus">Focus</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> AI / ML · Deep Learning · Generative AI</div>
+      <h1>Mandalreddy <em>Madhav</em></h1>
+      <p class="lede">I build machine learning systems that see, read and retrieve: real-time vision for assistive navigation, retrieval-augmented research tools, and transformer-based language pipelines.</p>
+      <div class="cta">
+        <a class="btn primary" href="#projects">See the projects</a>
+        <a class="btn" href="https://github.com/Madhav8881">GitHub</a>
+      </div>
+    </div>
+    <div class="frame" role="img" aria-label="Illustration of a detection frame with labelled boxes for distance, retrieval and time to collision">
+      <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="400" height="300" rx="8" fill="var(--paper)"/>
+        <g stroke="var(--line)" stroke-width="1">
+          <line x1="0" y1="225" x2="400" y2="225"/>
+          <line x1="0" y1="255" x2="400" y2="255" opacity=".6"/>
+          <line x1="0" y1="275" x2="400" y2="275" opacity=".35"/>
+          <line x1="200" y1="225" x2="40" y2="300"/>
+          <line x1="200" y1="225" x2="360" y2="300"/>
+        </g>
+        <g fill="none" stroke-width="2">
+          <rect x="52" y="86" width="108" height="139" stroke="var(--accent)"/>
+          <rect x="232" y="128" width="96" height="97" stroke="var(--mark)"/>
+          <rect x="176" y="62" width="56" height="56" stroke="var(--accent)" stroke-dasharray="5 4"/>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="11" font-weight="500">
+          <rect x="52" y="68" width="112" height="18" fill="var(--accent)"/>
+          <text x="58" y="81" fill="#fff">person 0.97 · 1.4 m</text>
+          <rect x="232" y="110" width="108" height="18" fill="var(--mark)"/>
+          <text x="238" y="123" fill="#101820">chair 0.91 · 2.3 m</text>
+          <rect x="176" y="44" width="92" height="18" fill="var(--accent)"/>
+          <text x="182" y="57" fill="#fff">TTC 1.8 s</text>
+        </g>
+        <g fill="var(--accent)" opacity=".85">
+          <circle cx="106" cy="225" r="4"/>
+          <circle cx="280" cy="225" r="4" fill="var(--mark)"/>
+        </g>
+        <g fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">
+          <text x="10" y="294">monocular depth → metres</text>
+        </g>
+      </svg>
+      <div class="cap"><span>illustrative frame</span><span>detect · track · estimate · speak</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="numbers" style="padding-top:0;border-top:0">
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><b>3</b><span>end-to-end AI projects</span></div>
+      <div class="stat"><b>80+</b><span>object classes recognised in real time</span></div>
+      <div class="stat"><b>~5×</b><span>faster summaries with the lightweight mode</span></div>
+      <div class="stat"><b>8.9</b><span>CGPA, B.Tech in AI &amp; ML</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="focus">
+  <div class="wrap">
+    <div class="sec-head"><h2>What I work on</h2><span class="tag">three areas, one habit: make it run end to end</span></div>
+    <div class="focus">
+      <article>
+        <span class="idx">01 · Deep learning</span>
+        <h3>Computer vision</h3>
+        <p>Real-time detection, tracking and monocular depth, tuned so the output is trustworthy enough to speak aloud: Kalman filtering, time-to-collision and alert suppression.</p>
+        <div class="chips"><span class="chip">YOLOv8</span><span class="chip">PyTorch</span><span class="chip">OpenCV</span><span class="chip">Depth Anything V2</span></div>
+      </article>
+      <article>
+        <span class="idx">02 · Generative AI</span>
+        <h3>LLMs and RAG</h3>
+        <p>Retrieval pipelines that answer with citations: vector search over embeddings, combined with structured metadata, and LLM agents that route to the right tool.</p>
+        <div class="chips"><span class="chip">LangChain</span><span class="chip">Chroma</span><span class="chip">SentenceTransformers</span><span class="chip">FastAPI</span></div>
+      </article>
+      <article>
+        <span class="idx">03 · NLP</span>
+        <h3>Language models</h3>
+        <p>Extractive and abstractive summarization with classical ranking and pretrained transformers, plus embeddings for zero-shot recognition without fine-tuning.</p>
+        <div class="chips"><span class="chip">BART</span><span class="chip">Transformers</span><span class="chip">TF-IDF</span><span class="chip">NLTK</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head"><h2>Projects</h2><span class="tag">selected work</span></div>
+
+    <article class="project">
+      <div>
+        <span class="no">PROJECT 01 · DEEP LEARNING</span>
+        <h3>Visiona AI</h3>
+        <p class="what">A real-time assistive navigation system for blind and visually impaired users. It reads a live camera feed, estimates how far away things are from a single RGB camera, and gives short spoken guidance, hands-free, with offline fallbacks.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">YOLOv8</span><span class="chip">Depth Anything V2</span><span class="chip">PyTorch</span><span class="chip">OpenCV</span><span class="chip">LangChain</span></div>
+        <div class="pipe"><span class="node">camera</span><i>→</i><span class="node">YOLOv8</span><i>→</i><span class="node">depth</span><i>→</i><span class="node">ByteTrack + Kalman</span><i>→</i><span class="node">TTC</span><i>→</i><span class="node">voice</span></div>
+        <div class="links"><a href="https://github.com/Madhav8881">View on GitHub</a></div>
+      </div>
+      <ul>
+        <li><strong>Perception.</strong> YOLOv8 detects 80+ object classes while Depth Anything V2 turns a single RGB camera into metric distance, across multiple camera feeds.</li>
+        <li><strong>Threat assessment.</strong> Combines distance, approach speed and time-to-collision, with ByteTrack, Kalman filtering and a priority queue. A 7-second penalty heatmap suppresses false and repetitive proximity alerts.</li>
+        <li><strong>Zero-shot custom objects.</strong> MobileNetV3 embeddings with cosine similarity swap a generic label such as "person" for a saved name on the fly, with no fine-tuning and no catastrophic forgetting.</li>
+        <li><strong>Voice agent.</strong> Push-to-talk commands go to an LLM agent that sets goals, searches memory and requests walking directions.</li>
+      </ul>
+    </article>
+
+    <article class="project">
+      <div>
+        <span class="no">PROJECT 02 · GENERATIVE AI</span>
+        <h3>ResearchPilot AI</h3>
+        <p class="what">A research intelligence platform that reads academic papers and answers questions with evidence and source citations, so you can see where each claim came from.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">FastAPI</span><span class="chip">LangChain</span><span class="chip">Chroma</span><span class="chip">SentenceTransformers</span><span class="chip">MySQL</span></div>
+        <div class="pipe"><span class="node">papers</span><i>→</i><span class="node">embeddings</span><i>→</i><span class="node">Chroma + MySQL</span><i>→</i><span class="node">retrieve</span><i>→</i><span class="node">LLM + citations</span></div>
+        <div class="links"><a href="https://github.com/Madhav8881">View on GitHub</a></div>
+      </div>
+      <ul>
+        <li><strong>Hybrid retrieval.</strong> MySQL holds structured paper metadata while Chroma vector search over SentenceTransformers embeddings finds semantically relevant passages.</li>
+        <li><strong>Grounded answers.</strong> RAG with semantic search and LLMs returns evidence-based answers that cite their sources.</li>
+        <li><strong>Research analysis.</strong> Paper comparison, methodology extraction, citation-aware retrieval and research-gap identification, to surface relationships across large collections of papers.</li>
+      </ul>
+    </article>
+
+    <article class="project">
+      <div>
+        <span class="no">PROJECT 03 · NLP</span>
+        <h3>News Summarization System</h3>
+        <p class="what">Paste in any news article URL and get a summary two ways: extractive for speed and offline use, abstractive for a more human-sounding read.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">BART</span><span class="chip">Transformers</span><span class="chip">Scikit-learn</span><span class="chip">NLTK</span><span class="chip">BeautifulSoup</span></div>
+        <div class="pipe"><span class="node">URL</span><i>→</i><span class="node">scrape</span><i>→</i><span class="node">TF-IDF</span><i>/</i><span class="node">BART-large-CNN</span><i>→</i><span class="node">summary</span></div>
+        <div class="links"><a href="https://github.com/Madhav8881/News-Summarization-System">View on GitHub</a></div>
+      </div>
+      <ul>
+        <li><strong>Two independent pipelines.</strong> Extractive and abstractive summaries, with a CLI flag that skips the heavy model for roughly 5× faster output.</li>
+        <li><strong>Abstractive.</strong> The pretrained BART-large-CNN model, run through Hugging Face Transformers, writes summaries for articles of any length.</li>
+        <li><strong>Extractive.</strong> TF-IDF sentence ranking with NLTK tokenization and BeautifulSoup4 scraping, built on Scikit-learn so it works offline with no heavy dependencies.</li>
+      </ul>
+    </article>
+
+    <div class="more">
+      <span class="lbl">More machine learning on GitHub:</span>
+      <a class="chip" href="https://github.com/Madhav8881/real-estate-price-prediction">real-estate-price-prediction</a>
+      <a class="chip" href="https://github.com/Madhav8881/Heart_Attack_Prediction">Heart_Attack_Prediction</a>
+      <a class="chip" href="https://github.com/Madhav8881/Health-Care-Chat-Bot">Health-Care-Chat-Bot</a>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head"><h2>Skills</h2><span class="tag">tools I use to ship models</span></div>
+    <div class="skills">
+      <div class="skill-row"><h3>AI / ML</h3><div class="chips"><span class="chip">Deep Learning</span><span class="chip">Computer Vision</span><span class="chip">NLP</span><span class="chip">LLMs</span><span class="chip">RAG</span><span class="chip">Vector Databases</span><span class="chip">Embeddings</span></div></div>
+      <div class="skill-row"><h3>Frameworks and libraries</h3><div class="chips"><span class="chip">PyTorch</span><span class="chip">Hugging Face Transformers</span><span class="chip">LangChain</span><span class="chip">OpenCV</span><span class="chip">Scikit-learn</span><span class="chip">NumPy</span></div></div>
+      <div class="skill-row"><h3>Languages</h3><div class="chips"><span class="chip">Python</span><span class="chip">C++</span><span class="chip">SQL</span></div></div>
+      <div class="skill-row"><h3>Serving and tools</h3><div class="chips"><span class="chip">FastAPI</span><span class="chip">REST APIs</span><span class="chip">Git</span><span class="chip">GitHub</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="sec-head"><h2>Education</h2><span class="tag">2023 – 2027</span></div>
+    <div class="edu">
+      <div>
+        <h3>B.Tech in Artificial Intelligence and Machine Learning</h3>
+        <p>SRM University, Andhra Pradesh, India</p>
+      </div>
+      <div class="cgpa"><b>8.9</b><span>CGPA out of 10.0</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2>Let's build something that learns.</h2>
+    <p>If you're working on machine learning, deep learning or generative AI, I'd like to hear about it. Email is the fastest way to reach me.</p>
+    <div class="cta">
+      <a class="btn primary" href="mailto:madhavmandalreddy8881@gmail.com">madhavmandalreddy8881@gmail.com</a>
+      <a class="btn" href="https://github.com/Madhav8881">github.com/Madhav8881</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap"><span>Mandalreddy Madhav</span><span>AI / ML · DL · GenAI</span></div>
+</footer>
+
+</body>
+</html>
